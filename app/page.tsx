@@ -126,6 +126,16 @@ const foundersData: Founder[] = [
     twitter: "@yukitanaka",
     shareUrl: "https://founders.com/yukitanaka",
   },
+  {
+    id: 11,
+    name: "Shorupan Pirakaspathy",
+    country: "India",
+    city: "Hyderabad",
+    coordinates: [78.4867, 17.385], // Mumbai, India - Fixed coordinates
+    website: "https://priyasharma.com",
+    twitter: "@priyasharma",
+    shareUrl: "https://founders.com/priyasharma",
+  },
 ];
 
 // Ticker messages
@@ -240,20 +250,28 @@ export default function GlobeFounders() {
           );
 
           // Create marker element with better styling
+          const el = document.createElement("div");
+          el.className = "custom-marker";
+          el.style.cssText = `
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(45deg, #000000, #e8b622);
+            border: 2px solid #fbbf24;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute;
+            top:0,
+            z-index: 1;
+          `;
+
           // const el = document.createElement("div");
-          // el.className = "founder-marker";
-          // el.style.cssText = `
-          //   width: 16px;
-          //   height: 16px;
-          //   background: linear-gradient(45deg, #ef4444, #f97316);
-          //   border: 2px solid #fbbf24;
-          //   border-radius: 50%;
-          //   box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
-          //   cursor: pointer;
-          //   transition: all 0.3s ease;
-          //   position: relative;
-          //   z-index: 1;
-          // `;
+          // el.className = "custom-marker";
+          // el.style.width = "24px";
+          // el.style.height = "24px";
+          // el.style.backgroundColor = "blue";
+          // el.style.borderRadius = "50%";
 
           // Add hover effect
           // el.addEventListener("mouseenter", () => {
@@ -269,6 +287,16 @@ export default function GlobeFounders() {
           // });
 
           try {
+            // Create marker with explicit positioning
+            const marker = new mapboxgl.Marker({
+              element: el,
+              anchor: "center",
+            })
+              .setLngLat(founder.coordinates)
+              .addTo(map.current!);
+
+            markers.current.push(marker);
+
             // Create popup
             const popup = new mapboxgl.Popup({
               offset: 25,
@@ -309,19 +337,11 @@ export default function GlobeFounders() {
               </div>
             `);
 
-            // Create marker with explicit positioning
-            const marker = new mapboxgl.Marker()
-              .setLngLat(founder.coordinates)
-              .setPopup(popup)
-              .addTo(map.current!);
-
-            markers.current.push(marker);
-
             // Add click event for popup
-            // marker.addEventListener("click", (e) => {
-            //   e.stopPropagation();
-            //   popup.setLngLat(founder.coordinates).addTo(map.current!);
-            // });
+            el.addEventListener("click", (e) => {
+              e.stopPropagation();
+              popup.setLngLat(founder.coordinates).addTo(map.current!);
+            });
 
             console.log(`Successfully added marker for ${founder.name}`);
           } catch (error) {
