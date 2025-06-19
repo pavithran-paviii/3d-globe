@@ -7,14 +7,31 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// Dummy founder data
-const foundersData = [
+// Import Mapbox CSS
+import "mapbox-gl/dist/mapbox-gl.css";
+
+// Types
+interface Founder {
+  id: number;
+  name: string;
+  country: string;
+  city: string;
+  coordinates: [number, number]; // [longitude, latitude]
+  website: string;
+  twitter: string;
+  shareUrl: string;
+}
+
+type FoundersByCountry = Record<string, Founder[]>;
+
+// Fixed founder data with correct coordinates [longitude, latitude]
+const foundersData: Founder[] = [
   {
     id: 1,
     name: "John Smith",
     country: "Canada",
     city: "Toronto",
-    coordinates: [-79.3832, 43.6532],
+    coordinates: [-79.3832, 43.6532], // Toronto, Canada
     website: "https://johnsmith.com",
     twitter: "@johnsmith",
     shareUrl: "https://founders.com/johnsmith",
@@ -24,7 +41,7 @@ const foundersData = [
     name: "Priya Sharma",
     country: "India",
     city: "Mumbai",
-    coordinates: [72.8777, 19.076],
+    coordinates: [72.8777, 19.076], // Mumbai, India - Fixed coordinates
     website: "https://priyasharma.com",
     twitter: "@priyasharma",
     shareUrl: "https://founders.com/priyasharma",
@@ -34,7 +51,7 @@ const foundersData = [
     name: "Alex Johnson",
     country: "United States",
     city: "San Francisco",
-    coordinates: [-122.4194, 37.7749],
+    coordinates: [-122.4194, 37.7749], // San Francisco, USA
     website: "https://alexjohnson.com",
     twitter: "@alexjohnson",
     shareUrl: "https://founders.com/alexjohnson",
@@ -44,7 +61,7 @@ const foundersData = [
     name: "Maria Garcia",
     country: "Spain",
     city: "Madrid",
-    coordinates: [-3.7038, 40.4168],
+    coordinates: [-3.7038, 40.4168], // Madrid, Spain
     website: "https://mariagarcia.com",
     twitter: "@mariagarcia",
     shareUrl: "https://founders.com/mariagarcia",
@@ -54,7 +71,7 @@ const foundersData = [
     name: "Chen Wei",
     country: "China",
     city: "Shanghai",
-    coordinates: [121.4737, 31.2304],
+    coordinates: [121.4737, 31.2304], // Shanghai, China
     website: "https://chenwei.com",
     twitter: "@chenwei",
     shareUrl: "https://founders.com/chenwei",
@@ -64,7 +81,7 @@ const foundersData = [
     name: "Sarah Wilson",
     country: "United Kingdom",
     city: "London",
-    coordinates: [-0.1276, 51.5074],
+    coordinates: [-0.1276, 51.5074], // London, UK
     website: "https://sarahwilson.com",
     twitter: "@sarahwilson",
     shareUrl: "https://founders.com/sarahwilson",
@@ -74,7 +91,7 @@ const foundersData = [
     name: "Ahmed Hassan",
     country: "Egypt",
     city: "Cairo",
-    coordinates: [31.2357, 30.0444],
+    coordinates: [31.2357, 30.0444], // Cairo, Egypt
     website: "https://ahmedhassan.com",
     twitter: "@ahmedhassan",
     shareUrl: "https://founders.com/ahmedhassan",
@@ -84,7 +101,7 @@ const foundersData = [
     name: "Lucas Silva",
     country: "Brazil",
     city: "São Paulo",
-    coordinates: [-46.6333, -23.5505],
+    coordinates: [-46.6333, -23.5505], // São Paulo, Brazil
     website: "https://lucassilva.com",
     twitter: "@lucassilva",
     shareUrl: "https://founders.com/lucassilva",
@@ -94,7 +111,7 @@ const foundersData = [
     name: "Emma Brown",
     country: "Australia",
     city: "Sydney",
-    coordinates: [151.2093, -33.8688],
+    coordinates: [151.2093, -33.8688], // Sydney, Australia
     website: "https://emmabrown.com",
     twitter: "@emmabrown",
     shareUrl: "https://founders.com/emmabrown",
@@ -104,65 +121,15 @@ const foundersData = [
     name: "Yuki Tanaka",
     country: "Japan",
     city: "Tokyo",
-    coordinates: [139.6917, 35.6895],
+    coordinates: [139.6917, 35.6895], // Tokyo, Japan
     website: "https://yukitanaka.com",
     twitter: "@yukitanaka",
     shareUrl: "https://founders.com/yukitanaka",
   },
-  {
-    id: 11,
-    name: "Pierre Dubois",
-    country: "France",
-    city: "Paris",
-    coordinates: [2.3522, 48.8566],
-    website: "https://pierredubois.com",
-    twitter: "@pierredubois",
-    shareUrl: "https://founders.com/pierredubois",
-  },
-  {
-    id: 12,
-    name: "Anna Kowalski",
-    country: "Poland",
-    city: "Warsaw",
-    coordinates: [21.0122, 52.2297],
-    website: "https://annakowalski.com",
-    twitter: "@annakowalski",
-    shareUrl: "https://founders.com/annakowalski",
-  },
-  {
-    id: 13,
-    name: "Carlos Rodriguez",
-    country: "Mexico",
-    city: "Mexico City",
-    coordinates: [-99.1332, 19.4326],
-    website: "https://carlosrodriguez.com",
-    twitter: "@carlosrodriguez",
-    shareUrl: "https://founders.com/carlosrodriguez",
-  },
-  {
-    id: 14,
-    name: "Fatima Al-Zahra",
-    country: "Morocco",
-    city: "Casablanca",
-    coordinates: [-7.5898, 33.5731],
-    website: "https://fatimaalzahra.com",
-    twitter: "@fatimaalzahra",
-    shareUrl: "https://founders.com/fatimaalzahra",
-  },
-  {
-    id: 15,
-    name: "Olaf Andersen",
-    country: "Norway",
-    city: "Oslo",
-    coordinates: [10.7522, 59.9139],
-    website: "https://olafandersen.com",
-    twitter: "@olafandersen",
-    shareUrl: "https://founders.com/olafandersen",
-  },
 ];
 
 // Ticker messages
-const tickerMessages = [
+const tickerMessages: string[] = [
   "John from Canada joined",
   "Priya from India became a supporter",
   "Alex from United States started a project",
@@ -172,59 +139,82 @@ const tickerMessages = [
 ];
 
 // Group founders by country
-const foundersByCountry = foundersData.reduce((acc, founder) => {
-  if (!acc[founder.country]) {
-    acc[founder.country] = [];
-  }
-  acc[founder.country].push(founder);
-  return acc;
-}, {} as Record<string, typeof foundersData>);
+const foundersByCountry: FoundersByCountry = foundersData.reduce(
+  (acc, founder) => {
+    if (!acc[founder.country]) {
+      acc[founder.country] = [];
+    }
+    acc[founder.country].push(founder);
+    return acc;
+  },
+  {} as FoundersByCountry
+);
 
 export default function GlobeFounders() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const markers = useRef<mapboxgl.Marker[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [currentTicker, setCurrentTicker] = useState(0);
-  const [hasValidToken, setHasValidToken] = useState(true);
+  const [currentTicker, setCurrentTicker] = useState<number>(0);
+  const [hasValidToken, setHasValidToken] = useState<boolean>(true);
   const [mapInitError, setMapInitError] = useState<string | null>(null);
+  const [isMapLoaded, setIsMapLoaded] = useState<boolean>(false);
+
+  // Function to validate coordinates
+  const validateCoordinates = (
+    coords: [number, number],
+    name: string
+  ): boolean => {
+    const [lng, lat] = coords;
+    const isValid = lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90;
+    if (!isValid) {
+      console.error(`Invalid coordinates for ${name}: [${lng}, ${lat}]`);
+    }
+    return isValid;
+  };
 
   // Initialize map
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-    // Reject obviously invalid / missing tokens
-    if (!token || token === "YOUR_MAPBOX_ACCESS_TOKEN") {
+    // Check for valid token
+    if (!token || token === "YOUR_MAPBOX_ACCESS_TOKEN" || token.length < 10) {
       setHasValidToken(false);
+      setMapInitError("Invalid or missing Mapbox token");
       return;
     }
 
     mapboxgl.accessToken = token;
 
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || map.current) return;
 
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/dark-v11",
-        projection: "globe",
-        center: [0, 20],
+        projection: { name: "globe" },
+        center: [20, 20], // Changed to better center the globe
         zoom: 1.5,
         pitch: 0,
         bearing: 0,
       });
 
-      // Catch Mapbox runtime errors (e.g. bad scopes)
-      map.current.on("error", (e) => {
-        if (e && (e as any).error && (e as any).error.message) {
-          setMapInitError((e as any).error.message as string);
+      // Handle map errors
+      map.current.on("error", (e: any) => {
+        console.error("Mapbox error:", e);
+        if (e?.error?.message) {
+          setMapInitError(e.error.message);
           setHasValidToken(false);
         }
       });
 
+      // Wait for map to be fully loaded
       map.current.on("load", () => {
         if (!map.current) return;
 
-        // Add atmosphere
+        console.log("Map loaded, adding atmosphere and markers...");
+
+        // Add atmosphere for globe
         map.current.setFog({
           color: "rgb(186, 210, 235)",
           "high-color": "rgb(36, 92, 223)",
@@ -233,74 +223,138 @@ export default function GlobeFounders() {
           "star-intensity": 0.6,
         });
 
+        // Clear existing markers
+        markers.current.forEach((marker) => marker.remove());
+        markers.current = [];
+
         // Add founders as markers
         foundersData.forEach((founder) => {
+          // Validate coordinates before adding marker
+          if (!validateCoordinates(founder.coordinates, founder.name)) {
+            console.warn(`Skipping ${founder.name} due to invalid coordinates`);
+            return;
+          }
+
           console.log(
-            "Placing marker for",
-            founder.name,
-            "at",
-            founder.coordinates
+            `Adding marker for ${founder.name} at [${founder.coordinates[0]}, ${founder.coordinates[1]}]`
           );
-          const el = document.createElement("div");
-          el.className = "founder-marker";
-          el.style.cssText = `
-          width: 20px;
-          height: 20px;
-          background: red;
-          border: 3px solid yellow;
-          border-radius: 50%;
-          box-shadow: 0 0 20px yellow;
-          animation: pulse 2s infinite;
-          cursor: pointer;
-          z-index: 9999;
-        `;
 
-          const marker = new mapboxgl.Marker(el)
-            .setLngLat(founder.coordinates as [number, number])
-            .addTo(map.current!);
+          // Create marker element with better styling
+          // const el = document.createElement("div");
+          // el.className = "founder-marker";
+          // el.style.cssText = `
+          //   width: 16px;
+          //   height: 16px;
+          //   background: linear-gradient(45deg, #ef4444, #f97316);
+          //   border: 2px solid #fbbf24;
+          //   border-radius: 50%;
+          //   box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+          //   cursor: pointer;
+          //   transition: all 0.3s ease;
+          //   position: relative;
+          //   z-index: 1;
+          // `;
 
-          // Add popup on click
-          const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-            <div style="padding: 16px; background: #18181b; color: #fff; border-radius: 12px; min-width: 240px; box-shadow: 0 4px 24px #000a; font-family: inherit;">
-              <h3 style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem;">${
-                founder.name
-              }</h3>
-              <div style="font-size: 0.95rem; color: #a3a3a3; margin-bottom: 0.5rem;">${
-                founder.city
-              }, ${founder.country}</div>
-              <div style="margin-bottom: 0.5rem;">
-                <span style='display: flex; align-items: center; gap: 6px; margin-bottom: 4px;'><span style='font-size:1rem;'>🌐</span> <a href='${
-                  founder.website
-                }' target='_blank' style='color:#60a5fa; text-decoration:underline;'>${
-            founder.website
-          }</a></span>
-                <span style='display: flex; align-items: center; gap: 6px; margin-bottom: 4px;'><span style='font-size:1rem;'>🐦</span> <a href='https://twitter.com/${founder.twitter.replace(
-                  "@",
-                  ""
-                )}' target='_blank' style='color:#60a5fa; text-decoration:underline;'>${
-            founder.twitter
-          }</a></span>
-                <span style='display: flex; align-items: center; gap: 6px;'><span style='font-size:1rem;'>🔗</span> <a href='${
-                  founder.shareUrl
-                }' target='_blank' style='color:#60a5fa; text-decoration:underline;'>Share profile</a></span>
+          // Add hover effect
+          // el.addEventListener("mouseenter", () => {
+          //   el.style.transform = "scale(1.4)";
+          //   el.style.boxShadow = "0 0 25px rgba(251, 191, 36, 0.8)";
+          //   el.style.zIndex = "2";
+          // });
+
+          // el.addEventListener("mouseleave", () => {
+          //   el.style.transform = "scale(1)";
+          //   el.style.boxShadow = "0 0 15px rgba(251, 191, 36, 0.6)";
+          //   el.style.zIndex = "1";
+          // });
+
+          try {
+            // Create popup
+            const popup = new mapboxgl.Popup({
+              offset: 25,
+              closeButton: true,
+              closeOnClick: true,
+              maxWidth: "300px",
+            }).setHTML(`
+              <div style="padding: 16px; background: #1f2937; color: #fff; border-radius: 12px; min-width: 240px; font-family: system-ui, -apple-system, sans-serif;">
+                <h3 style="font-size: 1.1rem; font-weight: 600; margin: 0 0 8px 0; color: #f9fafb;">${
+                  founder.name
+                }</h3>
+                <div style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 12px;">${
+                  founder.city
+                }, ${founder.country}</div>
+                <div style="font-size: 0.8rem; color: #6b7280; margin-bottom: 12px;">
+                  Coordinates: ${founder.coordinates[1].toFixed(
+                    4
+                  )}, ${founder.coordinates[0].toFixed(4)}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <a href="${
+                    founder.website
+                  }" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                    <span>🌐</span> Website
+                  </a>
+                  <a href="https://twitter.com/${founder.twitter.replace(
+                    "@",
+                    ""
+                  )}" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                    <span>🐦</span> ${founder.twitter}
+                  </a>
+                  <a href="${
+                    founder.shareUrl
+                  }" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                    <span>🔗</span> Share Profile
+                  </a>
+                </div>
               </div>
-            </div>
-          `);
+            `);
 
-          marker.getElement().addEventListener("click", () => {
-            popup
-              .setLngLat(founder.coordinates as [number, number])
+            // Create marker with explicit positioning
+            const marker = new mapboxgl.Marker()
+              .setLngLat(founder.coordinates)
+              .setPopup(popup)
               .addTo(map.current!);
-          });
+
+            markers.current.push(marker);
+
+            // Add click event for popup
+            // marker.addEventListener("click", (e) => {
+            //   e.stopPropagation();
+            //   popup.setLngLat(founder.coordinates).addTo(map.current!);
+            // });
+
+            console.log(`Successfully added marker for ${founder.name}`);
+          } catch (error) {
+            console.error(`Error adding marker for ${founder.name}:`, error);
+          }
         });
+
+        setIsMapLoaded(true);
+        console.log(`Total markers added: ${markers.current.length}`);
+      });
+
+      // Debug map events
+      map.current.on("styledata", () => {
+        console.log("Style data loaded");
+      });
+
+      map.current.on("sourcedata", () => {
+        console.log("Source data loaded");
       });
     } catch (err: any) {
+      console.error("Map initialization error:", err);
       setMapInitError(err.message);
       setHasValidToken(false);
     }
 
+    // Cleanup
     return () => {
-      map.current?.remove();
+      markers.current.forEach((marker) => marker.remove());
+      markers.current = [];
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, []);
 
@@ -315,20 +369,32 @@ export default function GlobeFounders() {
 
   // Handle country selection
   const handleCountryClick = (country: string) => {
-    if (!map.current) return;
+    if (!map.current || !isMapLoaded) return;
 
     setSelectedCountry(country);
     const founders = foundersByCountry[country];
-    if (founders.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
-      founders.forEach((founder) => {
-        bounds.extend(founder.coordinates as [number, number]);
-      });
 
-      map.current.fitBounds(bounds, {
-        padding: 100,
-        duration: 1500,
-      });
+    if (founders && founders.length > 0) {
+      if (founders.length === 1) {
+        // If only one founder, fly to their location
+        map.current.flyTo({
+          center: founders[0].coordinates,
+          zoom: 6,
+          duration: 1500,
+        });
+      } else {
+        // If multiple founders, fit bounds
+        const bounds = new mapboxgl.LngLatBounds();
+        founders.forEach((founder) => {
+          bounds.extend(founder.coordinates);
+        });
+
+        map.current.fitBounds(bounds, {
+          padding: 100,
+          duration: 1500,
+          maxZoom: 8,
+        });
+      }
     }
   };
 
@@ -336,26 +402,24 @@ export default function GlobeFounders() {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-900 text-white p-8 text-center space-y-4">
         <Globe className="w-14 h-14 text-blue-500" />
-        <h1 className="text-2xl font-bold">Mapbox token required</h1>
+        <h1 className="text-2xl font-bold">Mapbox Token Required</h1>
         <p className="text-sm text-gray-400 max-w-md">
-          To preview the interactive globe you must provide a valid
-          <code className="mx-1 px-1 py-0.5 bg-gray-800 rounded">
+          To view the interactive globe, you need to provide a valid{" "}
+          <code className="mx-1 px-2 py-1 bg-gray-800 rounded text-xs">
             NEXT_PUBLIC_MAPBOX_TOKEN
-          </code>
-          in your environment variables. <br />
-          {mapInitError && (
-            <span className="block mt-2 text-red-400">
-              Error: {mapInitError}
-            </span>
-          )}
+          </code>{" "}
+          in your environment variables.
         </p>
+        {mapInitError && (
+          <p className="text-red-400 text-sm mt-2">Error: {mapInitError}</p>
+        )}
         <a
           href="https://docs.mapbox.com/api/overview/#access-tokens-and-token-scopes"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-400 underline hover:text-blue-300 text-sm"
         >
-          Mapbox documentation
+          Get Mapbox Token →
         </a>
       </div>
     );
@@ -386,6 +450,14 @@ export default function GlobeFounders() {
               <Users className="w-4 h-4" />
               <span>{foundersData.length} founders worldwide</span>
             </div>
+            {!isMapLoaded && (
+              <div className="text-xs text-yellow-400">Loading map...</div>
+            )}
+            {isMapLoaded && (
+              <div className="text-xs text-green-400">
+                Map loaded with {markers.current.length} markers
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -426,8 +498,11 @@ export default function GlobeFounders() {
       {/* Map Container */}
       <div
         ref={mapContainer}
-        id="mapbox-globe"
-        className="!absolute top-10 left-80 right-0 bottom-0"
+        className="absolute top-10 left-80 right-0 bottom-0"
+        style={{
+          width: "calc(100vw - 320px)",
+          height: "calc(100vh - 40px)",
+        }}
       />
 
       {/* Add Me Button */}
@@ -483,15 +558,31 @@ export default function GlobeFounders() {
           animation: marquee 15s linear infinite;
         }
 
+        .founder-marker {
+          animation: pulse 2s infinite;
+        }
+
         .mapboxgl-popup-content {
-          background: rgb(17 24 39) !important;
+          background: #1f2937 !important;
           color: white !important;
           border-radius: 8px !important;
           padding: 0 !important;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
         }
 
         .mapboxgl-popup-tip {
-          border-top-color: rgb(17 24 39) !important;
+          border-top-color: #1f2937 !important;
+        }
+
+        .mapboxgl-popup-close-button {
+          color: #9ca3af !important;
+          font-size: 18px !important;
+          padding: 8px !important;
+        }
+
+        .mapboxgl-popup-close-button:hover {
+          color: #f9fafb !important;
+          background: rgba(75, 85, 99, 0.5) !important;
         }
       `}</style>
     </div>
